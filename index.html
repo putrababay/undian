@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undian Takbir Keliling - Pejantran</title>
+    <!-- Framework & Plugins -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-green: #064e3b;
+            --secondary-green: #047857;
+            --gold: #f59e0b;
+            --light-bg: #f8fafc;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: #1f2937;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Footer */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            border-bottom: 5px solid var(--gold);
+            padding: 10px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-header h1 {
+            color: var(--gold) !important;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            font-size: 1.8rem;
+        }
+
+        .main-footer {
+            background: var(--primary-green);
+            color: white;
+            border-top: 5px solid var(--gold);
+            padding: 10px 0;
+            margin-top: auto;
+        }
+
+        .main-footer p {
+            color: #d1fae5 !important;
+        }
+
+        /* Layout Cards */
+        .card-custom {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        /* Spin Center Area */
+        .spin-container {
+            background: white;
+            border-radius: 50%;
+            width: 380px;
+            height: 380px;
+            border: 12px solid var(--primary-green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        #displayNama {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            text-align: center;
+            padding: 20px;
+            word-wrap: break-word;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Inputs & Buttons */
+        .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(21, 128, 61, 0.25);
+        }
+
+        .btn-green {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-green:hover {
+            background-color: #166534;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Winner Table */
+        .table-winner thead {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="main-header text-center">
+        <div class="container">
+            <h1 class="fw-bold mb-1"><i class="bi bi-moon-stars-fill"></i> TAKBIR KELILING MUSHOLA AN NUR</h1>
+            <p class="mb-0 fw-medium" style="color: #d1fae5;">Dusun Pejantran RT4 RW1, Wonoplintahan, Kecamatan Prambon
+                Kabupaten Sidoarjo - Edisi Idul
+                Adha 2026
+            </p>
+        </div>
+    </header>
+
+    <div class="container-fluid px-4 py-4">
+        <div class="row g-4">
+
+            <!-- KOLOM KIRI: INPUT PESERTA -->
+            <div class="col-lg-3">
+                <div class="card card-custom p-3">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-people"></i> Daftar Nama</h5>
+                    <textarea id="inputNama" class="form-control mb-3" rows="10"
+                        placeholder="Tulis nama, dipisahkan koma..." oninput="syncData()"></textarea>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success btn-sm" onclick="showModalFull('nama')">
+                            <i class="bi bi-fullscreen"></i> Preview Nama Full
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="resetSpecific('nama')">
+                            <i class="bi bi-trash"></i> Reset Daftar Nama
+                        </button>
+                    </div>
+                    <div class="mt-3 small text-muted">
+                        Total Peserta: <span id="countNama" class="fw-bold text-success">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KOLOM TENGAH: SPIN ZONE -->
+            <div class="col-lg-6 text-center">
+                <div id="clockDisplay" class="badge bg-light text-success border border-success mb-3 p-2 shadow-sm" style="font-size: 1.1rem; letter-spacing: 0.5px;">Memuat Jam...</div>
+                <div class="spin-container animate__animated animate__fadeIn">
+                    <div class="small text-muted text-uppercase mb-1 fw-bold">Hadiah Selanjutnya:</div>
+                    <div id="nextPrizeLabel" class="badge bg-warning text-dark mb-3">Memuat Hadiah...</div>
+                    <div id="displayNama">SIAP?</div>
+                </div>
+
+                <div class="px-5">
+                    <div class="progress shadow-sm" id="spinProgress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                            role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <button id="btnSpin" onclick="runLuckyDraw()" class="btn btn-green btn-lg mt-4 shadow w-100">
+                        <i class="bi bi-play-circle-fill me-2"></i> ACAK PEMENANG
+                    </button>
+                    <button class="btn btn-link text-muted mt-2 btn-sm" onclick="resetSystem()">Reset Data</button>
+                </div>
+            </div>
+
+            <!-- KOLOM KANAN: HADIAH & PEMENANG -->
+            <div class="col-lg-3">
+                <div class="card card-custom p-3">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-gift"></i> Hadiah & Hasil</h5>
+                    <textarea id="inputHadiah" class="form-control mb-3" rows="3"
+                        placeholder="Contoh: Kipas, Kompor, HP..." oninput="syncData()"></textarea>
+                    <div class="mt-2 small text-muted mb-3">
+                        Sisa Hadiah: <span id="countHadiah" class="fw-bold text-warning">0</span>
+                    </div>
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-outline-warning btn-sm" onclick="showModalFull('hadiah')">
+                            <i class="bi bi-fullscreen"></i> Preview Hadiah Full
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="showModalFull('hasil')">
+                            <i class="bi bi-trophy"></i> Preview Hasil Full
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm mt-2" onclick="resetHadiahDanHasil()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset & Kembalikan Data Pemenang
+                        </button>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table table-sm table-winner">
+                            <tbody id="winnerLog"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer text-center">
+        <div class="container">
+            <p class="mb-0 small">Sistem Undian Digital &bull; Desa Pejantran, Sidoarjo &bull; Dev: Bayu Anggara</p>
+        </div>
+    </footer>
+
+    <!-- MODAL LARGE UNTUK PREVIEW FULL -->
+    <div class="modal fade" id="modalFull" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalTitle">Preview Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light" style="overflow: hidden; padding: 15px;">
+                    <div id="modalContent" style="height: 100%; display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px; align-content: flex-start;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element (Ganti URL dengan file lokal jika ada) -->
+    <audio id="audioSpin" src="https://www.soundjay.com/buttons/button-3.mp3"></audio>
+    <audio id="audioWin" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
+
+    <script>
+        let listNama = [];
+        let listHadiah = [];
+        let winners = [];
+
+        window.onload = () => {
+            document.getElementById('inputNama').value = localStorage.getItem('pjt_nama') || "";
+            document.getElementById('inputHadiah').value = localStorage.getItem('pjt_hadiah') || "";
+            winners = JSON.parse(localStorage.getItem('pjt_winners')) || [];
+            renderWinnerTable();
+            syncData();
+            startClock();
+        };
+
+        function startClock() {
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            setInterval(() => {
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID', optionsDate);
+                const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
+                document.getElementById('clockDisplay').innerText = `${dateStr} • ${timeStr}`;
+            }, 1000);
+            
+            // Inisialisasi awal agar tidak menunggu 1 detik
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', optionsDate);
+            const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('clockDisplay').innerText = `${dateStr} • ${timeStr}`;
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+            if (Swal.isVisible()) return; // Jangan spin jika alert sedang terbuka
+            
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const btn = document.getElementById('btnSpin');
+                if (!btn.disabled) {
+                    runLuckyDraw();
+                }
+            }
+        });
+
+        function syncData() {
+            const n = document.getElementById('inputNama').value;
+            const h = document.getElementById('inputHadiah').value;
+            localStorage.setItem('pjt_nama', n);
+            localStorage.setItem('pjt_hadiah', h);
+
+            listNama = n.split(',').map(s => s.trim()).filter(s => s !== "");
+            listHadiah = h.split(',').map(s => s.trim()).filter(s => s !== "");
+
+            document.getElementById('countNama').innerText = listNama.length;
+            document.getElementById('countHadiah').innerText = listHadiah.length;
+            document.getElementById('nextPrizeLabel').innerText = listHadiah[0] || "TIDAK ADA HADIAH";
+            document.getElementById('btnSpin').disabled = (listNama.length === 0 || listHadiah.length === 0);
+        }
+
+        function runLuckyDraw() {
+            const btn = document.getElementById('btnSpin');
+            const display = document.getElementById('displayNama');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressContainer = document.getElementById('spinProgress');
+            const audioS = document.getElementById('audioSpin');
+
+            btn.disabled = true;
+            progressContainer.style.display = 'flex';
+            progressBar.style.width = '0%';
+
+            let duration = 3000; // 3 Detik
+            let startTime = Date.now();
+
+            const timer = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let percent = (elapsed / duration) * 100;
+
+                progressBar.style.width = percent + '%';
+                display.innerText = listNama[Math.floor(Math.random() * listNama.length)];
+                audioS.currentTime = 0;
+                audioS.play().catch(() => { }); // Efek suara setiap pergantian nama
+
+                if (elapsed >= duration) {
+                    clearInterval(timer);
+                    finalizeWinner();
+                }
+            }, 30); // Dipercepat agar lebih banyak nama yang berputar
+        }
+
+        function finalizeWinner() {
+            const audioW = document.getElementById('audioWin');
+            const winIdx = Math.floor(Math.random() * listNama.length);
+            const winnerName = listNama[winIdx];
+            const prizeName = listHadiah.shift();
+
+            listNama.splice(winIdx, 1);
+            document.getElementById('inputNama').value = listNama.join(', ');
+            document.getElementById('inputHadiah').value = listHadiah.join(', ');
+
+            winners.unshift({ nama: winnerName, hadiah: prizeName });
+            localStorage.setItem('pjt_winners', JSON.stringify(winners));
+
+            audioW.currentTime = 0;
+            audioW.play().catch(() => { });
+
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // SweetAlert Pemenang
+            Swal.fire({
+                title: '🎉 SELAMAT! 🎉',
+                html: `<h3 class="text-success fw-bold animate__animated animate__tada animate__infinite">${winnerName}</h3><p class="fs-5">Mendapatkan: <b>${prizeName}</b></p>`,
+                icon: 'success',
+                confirmButtonText: 'Alhamdulillah',
+                confirmButtonColor: '#15803d',
+                backdrop: `rgba(21, 128, 61, 0.4)`
+            });
+
+            document.getElementById('displayNama').innerText = winnerName;
+            document.getElementById('spinProgress').style.display = 'none';
+            renderWinnerTable();
+            syncData();
+        }
+
+        function renderWinnerTable() {
+            const log = document.getElementById('winnerLog');
+            log.innerHTML = winners.map(w => `
+                <tr class="animate__animated animate__fadeIn">
+                    <td><i class="bi bi-person-check-fill text-success"></i> <b>${w.nama}</b></td>
+                    <td class="text-end"><span class="badge bg-light text-dark border">${w.hadiah}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function getDynamicStyle(count) {
+            if (count === 0) return { cols: 1, fs: '2rem', p: '1rem' };
+            if (count <= 8) return { cols: 1, fs: '2.5rem', p: '1.5rem' };
+            if (count <= 16) return { cols: 2, fs: '2rem', p: '1.2rem' };
+            if (count <= 30) return { cols: 3, fs: '1.5rem', p: '1rem' };
+            if (count <= 50) return { cols: 4, fs: '1.2rem', p: '0.8rem' };
+            if (count <= 80) return { cols: 5, fs: '1rem', p: '0.6rem' };
+            if (count <= 120) return { cols: 6, fs: '0.85rem', p: '0.4rem' };
+            if (count <= 180) return { cols: 8, fs: '0.75rem', p: '0.3rem' };
+            return { cols: 10, fs: '0.65rem', p: '0.2rem' };
+        }
+
+        function showModalFull(type) {
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalFull'));
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            let dataArr = [];
+            if (type === 'nama') dataArr = listNama;
+            else if (type === 'hadiah') dataArr = listHadiah;
+            else if (type === 'hasil') dataArr = winners;
+
+            if (dataArr.length === 0) {
+                title.innerText = "Preview Data";
+                content.innerHTML = `<div class="w-100 h-100 d-flex justify-content-center align-items-center text-muted fs-3">Belum ada data</div>`;
+                modal.show();
+                return;
+            }
+
+            let style = getDynamicStyle(dataArr.length);
+            let itemsPerCol = Math.ceil(dataArr.length / style.cols);
+            
+            let itemHeight = `calc((100% - ${(itemsPerCol - 1) * 10}px) / ${itemsPerCol})`;
+            let itemWidth = `calc((100% - ${(style.cols - 1) * 10}px) / ${style.cols})`;
+
+            if (type === 'nama') {
+                title.innerText = "Daftar Peserta Undian";
+                content.innerHTML = listNama.map(n => 
+                    `<div class="bg-white border rounded shadow-sm text-center d-flex align-items-center justify-content-center fw-bold" 
+                          style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          <i class="bi bi-person-fill text-success me-2"></i> ${n}
+                    </div>`
+                ).join('');
+            } else if (type === 'hadiah') {
+                title.innerText = "Daftar Hadiah";
+                content.innerHTML = listHadiah.map((h, i) => 
+                    `<div class="bg-white border rounded shadow-sm d-flex align-items-center fw-bold" 
+                          style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          <span class="text-warning me-2">${i + 1}.</span> ${h}
+                    </div>`
+                ).join('');
+            } else if (type === 'hasil') {
+                title.innerText = "Daftar Pemenang";
+                content.innerHTML = winners.map((w, i) => 
+                    `<div class="bg-success text-white border rounded shadow-sm d-flex justify-content-between align-items-center fw-bold" 
+                          style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; white-space: nowrap;">
+                          <span class="text-truncate me-2"><span class="text-warning">${i + 1}.</span> ${w.nama}</span> 
+                          <span class="badge bg-warning text-dark text-truncate" style="font-size: 0.9em;">${w.hadiah}</span>
+                    </div>`
+                ).join('');
+            }
+            modal.show();
+        }
+
+        function resetSpecific(type) {
+            if (type === 'nama') {
+                Swal.fire({
+                    title: `Reset NAMA?`,
+                    text: `Data nama akan dihapus!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('inputNama').value = "";
+                        localStorage.removeItem('pjt_nama');
+                        syncData();
+                        Swal.fire('Terhapus!', `Data nama telah direset.`, 'success');
+                    }
+                });
+            }
+        }
+
+        function resetHadiahDanHasil() {
+            Swal.fire({
+                title: 'Reset & Kembalikan Data?',
+                text: 'Pemenang akan dihapus dan dikembalikan ke daftar nama & hadiah!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Kembalikan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let currentNama = document.getElementById('inputNama').value;
+                    let currentHadiah = document.getElementById('inputHadiah').value;
+
+                    let namaArray = currentNama ? currentNama.split(',').map(s => s.trim()).filter(s => s !== "") : [];
+                    let hadiahArray = currentHadiah ? currentHadiah.split(',').map(s => s.trim()).filter(s => s !== "") : [];
+
+                    // Kembalikan dari winners ke daftar
+                    winners.forEach(w => {
+                        namaArray.push(w.nama);
+                        hadiahArray.unshift(w.hadiah); // Agar urutan hadiah terjaga seperti semula
+                    });
+
+                    document.getElementById('inputNama').value = namaArray.join(', ');
+                    document.getElementById('inputHadiah').value = hadiahArray.join(', ');
+
+                    winners = [];
+                    localStorage.removeItem('pjt_winners');
+                    renderWinnerTable();
+                    syncData();
+                    
+                    document.getElementById('displayNama').innerText = "SIAP?";
+                    document.getElementById('spinProgress').style.display = 'none';
+
+                    Swal.fire('Berhasil!', 'Data hadiah dan hasil telah dikembalikan.', 'success');
+                }
+            });
+        }
+
+        function resetSystem() {
+            Swal.fire({
+                title: 'Reset Semua?',
+                text: "Data nama, hadiah, dan pemenang akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Reset!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
