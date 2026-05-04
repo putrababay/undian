@@ -196,7 +196,7 @@
             </button>
             <h1 class="fw-bold mb-1" id="titleHeader"><i class="bi bi-moon-stars-fill"></i> TAKBIR KELILING MUSHOLA AN
                 NUR</h1>
-            <p class="mb-0 fw-medium" id="subtitleHeader" style="color: #d1fae5;">Dusun Pejantran RT4 RW1,
+            <p class="mb-0 fw-medium" id="subtitleHeader" style="color: #d1fae5;">Dusun Pejantran Rt1 Rw4
                 Wonoplintahan, Kecamatan Prambon Kabupaten Sidoarjo - Edisi Idul Adha 2026</p>
             <!-- Desktop edit button -->
             <button class="btn btn-sm btn-outline-light position-absolute top-0 end-0 d-none d-md-block"
@@ -235,7 +235,9 @@
                     style="font-size: 1.1rem; letter-spacing: 0.5px;">Memuat Jam...</div>
                 <div class="spin-container animate__animated animate__fadeIn">
                     <div class="small text-muted text-uppercase mb-1 fw-bold">Hadiah Selanjutnya:</div>
-                    <div id="nextPrizeLabel" class="badge bg-warning text-dark mb-3">Memuat Hadiah...</div>
+                    <div id="nextPrizeLabel" class="badge bg-warning text-dark mb-3"
+                        style="font-size: 20px; font-weight: bold; border-radius: 5px;">Memuat
+                        Hadiah...</div>
                     <div id="displayNama">SIAP?</div>
                 </div>
 
@@ -317,7 +319,7 @@
 
     <!-- Audio Element (Menggunakan CDN yang lebih ringan dan cepat) -->
     <audio id="audioSpin" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
-    <audio id="audioWin" src="https://actions.google.com/sounds/v1/crowds/crowd_cheer.ogg" preload="auto"></audio>
+    <audio id="audioWin" src="menang.mp3" preload="auto"></audio>
 
     <script>
         let listNama = [];
@@ -350,7 +352,7 @@
         }
 
         window.onload = () => {
-            let defaultNama = "Farida Ratna Dewi, Siti Maryam, Tri Wahyuningtyas, Sulastri, Iit Hariyati, Sukanti, Lilis Widayanti, Sawitah, Lilis Widanarti, Novi (Sartono), Sriami, Zakkiya, Eni Kusrini, Asreni, Tianingsih R., Patri, Sulastri, Ngatminah, Efi Listyorini, Suharti, Uswatun, Sukarti, Sriadiati, Sunami, Lina Faizah, Seniti, Lasirah, Nevita, Suparni, Solipah, Meika Sofi Agustin, Bibit Sriwanti, Memi Laili, Musyarofah, Akiyat, Nurfauziah, Ety Nur Afiyah, Roikanah, Sutiani, Mariiyah, Sriningsih, Evit, Marianah, Misni, Sukotin, Muntamah, Korik, Sutilah, Suwarni, Samuah, Nurhayati, Iis Sugiarti, Silvia (Usil), Etik (Fauzi), Pipit Yuniarti, Yunitana, Suharmi, Ny. Bana Maulana (Vivi), Nuning (Agustiningrum), Ulfi, Suyono, Ngaisah, B. Ninik, Sriamah, Siti Fatimah, Munaiyah, Sampurna, Munikah, Novi (Irwan), Murti, Sulami, Ana Desia";
+            let defaultNama = "Farida Ratna Dewi, Siti Maryam, Tri Wahyuningtyas, Sulastri, Iit Hariyati, Sukanti, Lilis Widayanti, Sawitah, Lilis Widanarti, Novi (Sartono), Sriami, Zakiyyah, Eni Kusrini, Asreni, Tianingsih R., Patri, Sulastri, Ngatminah, Efi Listyorini, Suharti, Uswatun, Sukarti, Sriadiati, Sunami, Lina Faizah, Seniti, Lasirah, Nevita, Suparni, Solipah, Meika Sofi Agustin, Bibit Sriwanti, Memi Laili, Musyarofah, Akiyat, Nurfauziah, Ety Nur Afiyah, Roikanah, Sutiani, Mariiyah, Sriningsih, Evit, Marianah, Misni, Sukotin, Muntamah, Korik, Sutilah, Suwarni, Samuah, Nurhayati, Iis Sugiarti, Silvia (Usil), Etik (Fauzi), Pipit Yuniarti, Yunitana, Suharmi, Ny. Bana Maulana (Vivi), Nuning (Agustiningrum), Ulfi, Suyono, Ngaisah, B. Ninik, Sriamah, Siti Fatimah, Munaiyah, Sampurna, Munikah, Novi (Irwan), Murti, Sulami, Ana Desia";
             let defaultHadiah = "Minyak Goreng, Susu Kental Manis, Gula Pasir, Beras 5kg, Deterjen, Sabun Mandi, Teh Celup, Mie Instan, Kopi Bubuk, Permen";
 
             document.getElementById('inputNama').value = localStorage.getItem('pjt_nama') !== null ? localStorage.getItem('pjt_nama') : defaultNama;
@@ -494,34 +496,49 @@
             const winnerName = listNama[winIdx];
             const prizeName = listHadiah.shift();
 
+            // Hapus pemenang dari daftar agar tidak muncul dua kali
             listNama.splice(winIdx, 1);
+
+            // Sinkronisasi ulang tampilan input agar data terbaru tersimpan
             document.getElementById('inputNama').value = listNama.join(', ');
             document.getElementById('inputHadiah').value = listHadiah.join(', ');
 
+            // Simpan ke riwayat pemenang dan LocalStorage agar data aman jika refresh
             winners.unshift({ nama: winnerName, hadiah: prizeName });
             localStorage.setItem('pjt_winners', JSON.stringify(winners));
 
-            audioW.currentTime = 0;
-            audioW.play().catch(() => { });
+            // Reset dan mainkan suara kemenangan (Tepuk tangan/Terompet)
+            if (audioW) {
+                audioW.pause(); // Hentikan jika suara sebelumnya masih berputar
+                audioW.currentTime = 0; // Kembalikan ke detik awal
+                audioW.play().catch(error => {
+                    console.log("Interaksi user diperlukan untuk memutar audio:", error);
+                });
+            }
 
+            // Efek visual konfeti untuk merayakan juara
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 }
             });
 
-            // SweetAlert Pemenang
+            // Tampilkan pengumuman pemenang dengan SweetAlert2
             Swal.fire({
                 title: '🎉 SELAMAT! 🎉',
-                html: `<h3 class="text-success fw-bold animate__animated animate__tada animate__infinite">${winnerName}</h3><p class="fs-5">Mendapatkan: <b>${prizeName}</b></p>`,
+                html: `
+            <h3 class="text-success fw-bold animate__animated animate__tada animate__infinite">${winnerName}</h3>
+            <p class="fs-5">Mendapatkan: <b>${prizeName}</b></p>
+        `,
                 icon: 'success',
                 confirmButtonText: 'Alhamdulillah',
                 confirmButtonColor: '#15803d',
                 backdrop: `rgba(21, 128, 61, 0.4)`
             });
 
+            // Update elemen tampilan utama[cite: 1]
             document.getElementById('displayNama').innerText = winnerName;
-            document.getElementById('spinProgress').style.display = 'none';
+            document.getElementById('spinProgress').style.display = 'none'; // Sembunyikan progress bar[cite: 1]
             renderWinnerTable();
             syncData();
         }
