@@ -122,27 +122,95 @@
         .table-winner thead {
             background-color: #f8fafc;
         }
+
+        /* Custom Grid Layout for Responsive Ordering */
+        .custom-layout-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .grid-spin {
+            order: 1;
+        }
+
+        .grid-hasil {
+            order: 2;
+        }
+
+        .grid-nama {
+            order: 3;
+        }
+
+        .grid-hadiah {
+            order: 4;
+        }
+
+        @media (min-width: 992px) {
+            .custom-layout-grid {
+                display: grid;
+                grid-template-columns: 1fr 2fr 1fr;
+                grid-template-areas:
+                    "nama spin hasil"
+                    "nama spin hadiah";
+                gap: 1.5rem;
+                align-items: start;
+            }
+
+            .grid-nama {
+                grid-area: nama;
+                order: unset;
+            }
+
+            .grid-spin {
+                grid-area: spin;
+                order: unset;
+            }
+
+            .grid-hasil {
+                grid-area: hasil;
+                order: unset;
+            }
+
+            .grid-hadiah {
+                grid-area: hadiah;
+                order: unset;
+            }
+
+            .grid-spin {
+                position: sticky;
+                top: 20px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- Header -->
-    <header class="main-header text-center">
-        <div class="container">
-            <h1 class="fw-bold mb-1"><i class="bi bi-moon-stars-fill"></i> TAKBIR KELILING MUSHOLA AN NUR</h1>
-            <p class="mb-0 fw-medium" style="color: #d1fae5;">Dusun Pejantran RT4 RW1, Wonoplintahan, Kecamatan Prambon
-                Kabupaten Sidoarjo - Edisi Idul
-                Adha 2026
-            </p>
+    <header class="main-header text-center position-relative">
+        <div class="container position-relative">
+            <!-- Mobile edit button -->
+            <button class="btn btn-sm btn-outline-light d-md-none mt-2 mb-3" onclick="editHeader()">
+                <i class="bi bi-pencil-square"></i> Edit Header
+            </button>
+            <h1 class="fw-bold mb-1" id="titleHeader"><i class="bi bi-moon-stars-fill"></i> TAKBIR KELILING MUSHOLA AN
+                NUR</h1>
+            <p class="mb-0 fw-medium" id="subtitleHeader" style="color: #d1fae5;">Dusun Pejantran RT4 RW1,
+                Wonoplintahan, Kecamatan Prambon Kabupaten Sidoarjo - Edisi Idul Adha 2026</p>
+            <!-- Desktop edit button -->
+            <button class="btn btn-sm btn-outline-light position-absolute top-0 end-0 d-none d-md-block"
+                onclick="editHeader()" title="Edit Header" style="opacity: 0.8; margin-top: -5px;">
+                <i class="bi bi-pencil-square"></i> Edit
+            </button>
         </div>
     </header>
 
     <div class="container-fluid px-4 py-4">
-        <div class="row g-4">
+        <div class="custom-layout-grid">
 
-            <!-- KOLOM KIRI: INPUT PESERTA -->
-            <div class="col-lg-3">
+            <!-- KIRI: INPUT PESERTA -->
+            <div class="grid-nama">
                 <div class="card card-custom p-3">
                     <h5 class="fw-bold mb-3"><i class="bi bi-people"></i> Daftar Nama</h5>
                     <textarea id="inputNama" class="form-control mb-3" rows="10"
@@ -161,9 +229,10 @@
                 </div>
             </div>
 
-            <!-- KOLOM TENGAH: SPIN ZONE -->
-            <div class="col-lg-6 text-center">
-                <div id="clockDisplay" class="badge bg-light text-success border border-success mb-3 p-2 shadow-sm" style="font-size: 1.1rem; letter-spacing: 0.5px;">Memuat Jam...</div>
+            <!-- TENGAH: SPIN ZONE -->
+            <div class="grid-spin text-center">
+                <div id="clockDisplay" class="badge bg-light text-success border border-success mb-3 p-2 shadow-sm"
+                    style="font-size: 1.1rem; letter-spacing: 0.5px;">Memuat Jam...</div>
                 <div class="spin-container animate__animated animate__fadeIn">
                     <div class="small text-muted text-uppercase mb-1 fw-bold">Hadiah Selanjutnya:</div>
                     <div id="nextPrizeLabel" class="badge bg-warning text-dark mb-3">Memuat Hadiah...</div>
@@ -182,31 +251,39 @@
                 </div>
             </div>
 
-            <!-- KOLOM KANAN: HADIAH & PEMENANG -->
-            <div class="col-lg-3">
-                <div class="card card-custom p-3">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-gift"></i> Hadiah & Hasil</h5>
+            <!-- KANAN 1: HASIL -->
+            <div class="grid-hasil">
+                <div class="card card-custom p-3 h-100">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-trophy"></i> Hasil Pemenang</h5>
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-outline-primary btn-sm" onclick="showModalFull('hasil')">
+                            <i class="bi bi-fullscreen"></i> Preview Hasil Full
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="resetHadiahDanHasil()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Kembalikan Data Pemenang
+                        </button>
+                    </div>
+                    <div class="table-responsive" style="max-height: 200px;">
+                        <table class="table table-sm table-winner">
+                            <tbody id="winnerLog"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KANAN 2: HADIAH -->
+            <div class="grid-hadiah">
+                <div class="card card-custom p-3 h-100">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-gift"></i> Daftar Hadiah</h5>
                     <textarea id="inputHadiah" class="form-control mb-3" rows="3"
                         placeholder="Contoh: Kipas, Kompor, HP..." oninput="syncData()"></textarea>
                     <div class="mt-2 small text-muted mb-3">
                         Sisa Hadiah: <span id="countHadiah" class="fw-bold text-warning">0</span>
                     </div>
-                    <div class="d-grid gap-2 mb-3">
+                    <div class="d-grid gap-2">
                         <button class="btn btn-outline-warning btn-sm" onclick="showModalFull('hadiah')">
                             <i class="bi bi-fullscreen"></i> Preview Hadiah Full
                         </button>
-                        <button class="btn btn-outline-primary btn-sm" onclick="showModalFull('hasil')">
-                            <i class="bi bi-trophy"></i> Preview Hasil Full
-                        </button>
-                        <button class="btn btn-outline-danger btn-sm mt-2" onclick="resetHadiahDanHasil()">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset & Kembalikan Data Pemenang
-                        </button>
-                    </div>
-
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table table-sm table-winner">
-                            <tbody id="winnerLog"></tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -230,29 +307,103 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body bg-light" style="overflow: hidden; padding: 15px;">
-                    <div id="modalContent" style="height: 100%; display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px; align-content: flex-start;"></div>
+                    <div id="modalContent"
+                        style="height: 100%; display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px; align-content: flex-start;">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Audio Element (Ganti URL dengan file lokal jika ada) -->
-    <audio id="audioSpin" src="https://www.soundjay.com/buttons/button-3.mp3"></audio>
-    <audio id="audioWin" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
+    <!-- Audio Element (Menggunakan CDN yang lebih ringan dan cepat) -->
+    <audio id="audioSpin" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
+    <audio id="audioWin" src="https://actions.google.com/sounds/v1/crowds/crowd_cheer.ogg" preload="auto"></audio>
 
     <script>
         let listNama = [];
         let listHadiah = [];
         let winners = [];
 
+        // Setup Audio Context for ultra-light spin sound (No download required)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function playSyntheticTick() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
         window.onload = () => {
-            document.getElementById('inputNama').value = localStorage.getItem('pjt_nama') || "";
-            document.getElementById('inputHadiah').value = localStorage.getItem('pjt_hadiah') || "";
+            let defaultNama = "Farida Ratna Dewi, Siti Maryam, Tri Wahyuningtyas, Sulastri, Iit Hariyati, Sukanti, Lilis Widayanti, Sawitah, Lilis Widanarti, Novi (Sartono), Sriami, Zakkiya, Eni Kusrini, Asreni, Tianingsih R., Patri, Sulastri, Ngatminah, Efi Listyorini, Suharti, Uswatun, Sukarti, Sriadiati, Sunami, Lina Faizah, Seniti, Lasirah, Nevita, Suparmi, Solipah, Meika Sofi Agustin, Bibit Sriwanti, Mimi Laili, Musyarofah, Akiyat, Nurfauziah, Ety Nur Afiyah, Roikanah, Sutiani, Mariiyah, Sriningsih, Evit, Marianah, Misni, Sukotin, Muntamah, Korik, Sutilah, Suwarni, Samuah, Nurhayati, Iis Sugiarti, Silvia (Usil), Etik (Fauzi), Pipit Yuniarti, Yunitana, Suharmi, Ny. Bana Maulana (Vivi), Nuning (Agustiningrum), Ulfi, Suyono, Ngaisah, B. Ninik, Sriamah, Siti Fatimah, Munaiyah, Sampurna, Munikah, Novi (Irwan), Murti, Sulami, Ana Desia";
+            let defaultHadiah = "Minyak Goreng, Susu Kental Manis, Gula Pasir, Beras 5kg, Deterjen, Sabun Mandi, Teh Celup, Mie Instan, Kopi Bubuk, Permen";
+
+            document.getElementById('inputNama').value = localStorage.getItem('pjt_nama') !== null ? localStorage.getItem('pjt_nama') : defaultNama;
+            document.getElementById('inputHadiah').value = localStorage.getItem('pjt_hadiah') !== null ? localStorage.getItem('pjt_hadiah') : defaultHadiah;
+
+            // Load custom header if exists
+            let savedTitle = localStorage.getItem('pjt_title');
+            let savedSub = localStorage.getItem('pjt_sub');
+            if (savedTitle) {
+                let icon = savedTitle.includes('<i') ? '' : '<i class="bi bi-moon-stars-fill"></i> ';
+                document.getElementById('titleHeader').innerHTML = `${icon}${savedTitle.replace(/<i.*?>.*?<\/i>/g, '').trim()}`;
+            }
+            if (savedSub) document.getElementById('subtitleHeader').innerText = savedSub;
+
             winners = JSON.parse(localStorage.getItem('pjt_winners')) || [];
             renderWinnerTable();
             syncData();
             startClock();
         };
+
+        function editHeader() {
+            let currTitleText = document.getElementById('titleHeader').innerText.trim();
+            let currSubText = document.getElementById('subtitleHeader').innerText.trim();
+
+            Swal.fire({
+                title: 'Edit Header',
+                html: `
+                    <div class="text-start mb-2"><label class="fw-bold small">Judul Utama</label></div>
+                    <input id="swal-title" class="form-control mb-3" placeholder="Judul Utama" value="${currTitleText}">
+                    
+                    <div class="text-start mb-2"><label class="fw-bold small">Sub Judul / Keterangan</label></div>
+                    <textarea id="swal-sub" class="form-control" placeholder="Sub Judul" rows="3">${currSubText}</textarea>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#15803d',
+                preConfirm: () => {
+                    return {
+                        title: document.getElementById('swal-title').value,
+                        sub: document.getElementById('swal-sub').value
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('titleHeader').innerHTML = `<i class="bi bi-moon-stars-fill"></i> ${result.value.title}`;
+                    document.getElementById('subtitleHeader').innerText = result.value.sub;
+                    localStorage.setItem('pjt_title', result.value.title);
+                    localStorage.setItem('pjt_sub', result.value.sub);
+                    Swal.fire('Tersimpan!', 'Header berhasil diubah.', 'success');
+                }
+            });
+        }
 
         function startClock() {
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -262,7 +413,7 @@
                 const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
                 document.getElementById('clockDisplay').innerText = `${dateStr} • ${timeStr}`;
             }, 1000);
-            
+
             // Inisialisasi awal agar tidak menunggu 1 detik
             const now = new Date();
             const dateStr = now.toLocaleDateString('id-ID', optionsDate);
@@ -270,10 +421,10 @@
             document.getElementById('clockDisplay').innerText = `${dateStr} • ${timeStr}`;
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
             if (Swal.isVisible()) return; // Jangan spin jika alert sedang terbuka
-            
+
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const btn = document.getElementById('btnSpin');
@@ -312,14 +463,23 @@
             let duration = 3000; // 3 Detik
             let startTime = Date.now();
 
+            // Inisialisasi AudioContext pada interaksi pertama pengguna
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
             const timer = setInterval(() => {
                 let elapsed = Date.now() - startTime;
                 let percent = (elapsed / duration) * 100;
 
                 progressBar.style.width = percent + '%';
                 display.innerText = listNama[Math.floor(Math.random() * listNama.length)];
-                audioS.currentTime = 0;
-                audioS.play().catch(() => { }); // Efek suara setiap pergantian nama
+
+                try {
+                    playSyntheticTick(); // Suara yang jauh lebih ringan, 0 byte download
+                } catch (e) {
+                    audioS.currentTime = 0;
+                    audioS.play().catch(() => { });
+                }
 
                 if (elapsed >= duration) {
                     clearInterval(timer);
@@ -392,7 +552,7 @@
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalFull'));
             const title = document.getElementById('modalTitle');
             const content = document.getElementById('modalContent');
-            
+
             let dataArr = [];
             if (type === 'nama') dataArr = listNama;
             else if (type === 'hadiah') dataArr = listHadiah;
@@ -407,13 +567,13 @@
 
             let style = getDynamicStyle(dataArr.length);
             let itemsPerCol = Math.ceil(dataArr.length / style.cols);
-            
+
             let itemHeight = `calc((100% - ${(itemsPerCol - 1) * 10}px) / ${itemsPerCol})`;
             let itemWidth = `calc((100% - ${(style.cols - 1) * 10}px) / ${style.cols})`;
 
             if (type === 'nama') {
                 title.innerText = "Daftar Peserta Undian";
-                content.innerHTML = listNama.map(n => 
+                content.innerHTML = listNama.map(n =>
                     `<div class="bg-white border rounded shadow-sm text-center d-flex align-items-center justify-content-center fw-bold" 
                           style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           <i class="bi bi-person-fill text-success me-2"></i> ${n}
@@ -421,7 +581,7 @@
                 ).join('');
             } else if (type === 'hadiah') {
                 title.innerText = "Daftar Hadiah";
-                content.innerHTML = listHadiah.map((h, i) => 
+                content.innerHTML = listHadiah.map((h, i) =>
                     `<div class="bg-white border rounded shadow-sm d-flex align-items-center fw-bold" 
                           style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           <span class="text-warning me-2">${i + 1}.</span> ${h}
@@ -429,7 +589,7 @@
                 ).join('');
             } else if (type === 'hasil') {
                 title.innerText = "Daftar Pemenang";
-                content.innerHTML = winners.map((w, i) => 
+                content.innerHTML = winners.map((w, i) =>
                     `<div class="bg-success text-white border rounded shadow-sm d-flex justify-content-between align-items-center fw-bold" 
                           style="width: ${itemWidth}; height: ${itemHeight}; font-size: ${style.fs}; padding: ${style.p}; overflow: hidden; white-space: nowrap;">
                           <span class="text-truncate me-2"><span class="text-warning">${i + 1}.</span> ${w.nama}</span> 
@@ -491,7 +651,7 @@
                     localStorage.removeItem('pjt_winners');
                     renderWinnerTable();
                     syncData();
-                    
+
                     document.getElementById('displayNama').innerText = "SIAP?";
                     document.getElementById('spinProgress').style.display = 'none';
 
