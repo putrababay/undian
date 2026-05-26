@@ -80,17 +80,17 @@
       /* Spin Center Area */
       .spin-container {
         background: white;
-        border-radius: 30%;
-        width: 450px;
-        height: 450px;
-        border: 15px solid var(--primary-green);
+        border-radius: 50%;
+        width: 380px;
+        height: 380px;
+        border: 12px solid var(--primary-green);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         position: relative;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        margin: 10px auto;
+        margin: 20px auto;
       }
 
       #displayNama {
@@ -134,61 +134,6 @@
       /* Winner Table */
       .table-winner thead {
         background-color: #f8fafc;
-      }
-
-      .swal2-popup.swal2-popup-large {
-        width: 96vw !important;
-        max-width: 96vw !important;
-        height: 92vh !important;
-        max-height: 92vh !important;
-        padding: 1rem !important;
-        border-radius: 1.2rem !important;
-      }
-
-      .swal2-html-large {
-        width: 100%;
-        max-height: calc(92vh - 115px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-right: 0.2rem;
-      }
-
-      .swal2-html-large .result-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1rem;
-        align-items: stretch;
-      }
-
-      .swal2-html-large .result-card {
-        background: #ffffff;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: 1rem;
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-        padding: 1rem 1rem 1.25rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: 160px;
-      }
-
-      .swal2-html-large .result-card .card-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 0.35rem;
-      }
-
-      .swal2-html-large .result-card .card-subtitle {
-        font-size: 0.85rem;
-        color: #4b5563;
-        margin-bottom: 0.75rem;
-      }
-
-      .swal2-html-large .result-card .card-prize {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #0f172a;
-        line-height: 1.35;
       }
 
       /* Custom Grid Layout for Responsive Ordering */
@@ -332,29 +277,10 @@
               style="font-size: 20px; font-weight: bold; border-radius: 5px">
               Memuat Hadiah...
             </div>
-            <div
-              id="nextPrizeList"
-              class="d-flex flex-wrap justify-content-center gap-2 mb-3"></div>
             <div id="displayNama">SIAP?</div>
           </div>
 
           <div class="px-5">
-            <div class="mb-3 text-start">
-              <label for="inputCount" class="form-label fw-bold"
-                >Jumlah Hadiah yang akan di spin</label
-              >
-              <input
-                id="inputCount"
-                type="number"
-                min="1"
-                step="1"
-                class="form-control"
-                value="1"
-                oninput="syncData()" />
-              <div id="spinHelp" class="form-text">
-                Pilih jumlah hadiah yang akan diundi sekaligus.
-              </div>
-            </div>
             <div class="progress shadow-sm" id="spinProgress">
               <div
                 class="progress-bar progress-bar-striped progress-bar-animated bg-success"
@@ -516,7 +442,7 @@
         let defaultNama =
           "Farida Ratna Dewi, Siti Maryam, Tri Wahyuningtyas, Sulastri, Iit Hariyati, Sukanti, Lilis Widayanti, Sawitah, Lilis Widanarti, Novi (Sartono), Sriami, Zakiyyah, Eni Kusrini, Asreni, Tianingsih R., Patri, Sulastri, Ngatminah, Efi Listyorini, Suharti, Uswatun, Sukarti, Sriadiati, Sunami, Lina Faizah, Seniti, Lasirah, Nevita, Suparni, Solipah, Meika Sofi Agustin, Bibit Sriwanti, Memi Laili, Musyarofah, Akiyat, Nurfauziah, Ety Nur Afiyah, Roikanah, Sutiani, Mariiyah, Sriningsih, Evit, Marianah, Misni, Sukotin, Muntamah, Korik, Sutilah, Suwarni, Samuah, Nurhayati, Iis Sugiarti, Silvia (Usil), Etik (Fauzi), Pipit Yuniarti, Yunitana, Suharmi, Ny. Bana Maulana (Vivi), Nuning (Agustiningrum), Ulfi, Suyono, Ngaisah, B. Ninik, Sriamah, Siti Fatimah, Munaiyah, Sampurna, Munikah, Novi (Irwan), Murti, Sulami, Ana Desia";
         let defaultHadiah =
-          "Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Deterjen Sosof, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, Rinso Anti Noda 380G, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, SO Klin Softergent 455g, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Sunlight 610 Gram, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Molto Pewangi 765 ML, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Super Pell  Stob 760G, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg, Gula Putih 1 kg";
+          "Minyak Goreng, Susu Kental Manis, Gula Pasir, Beras 5kg, Deterjen, Sabun Mandi, Teh Celup, Mie Instan, Kopi Bubuk, Permen";
 
         document.getElementById("inputNama").value =
           localStorage.getItem("pjt_nama") !== null
@@ -526,10 +452,6 @@
           localStorage.getItem("pjt_hadiah") !== null
             ? localStorage.getItem("pjt_hadiah")
             : defaultHadiah;
-        document.getElementById("inputCount").value =
-          localStorage.getItem("pjt_count") !== null
-            ? localStorage.getItem("pjt_count")
-            : 1;
 
         // Load custom header if exists
         let savedTitle = localStorage.getItem("pjt_title");
@@ -630,14 +552,8 @@
       function syncData() {
         const n = document.getElementById("inputNama").value;
         const h = document.getElementById("inputHadiah").value;
-        const countInput =
-          parseInt(document.getElementById("inputCount").value, 10) || 1;
-        const safeCount = Math.max(1, countInput);
-
         localStorage.setItem("pjt_nama", n);
         localStorage.setItem("pjt_hadiah", h);
-        localStorage.setItem("pjt_count", safeCount);
-        document.getElementById("inputCount").value = safeCount;
 
         listNama = n
           .split(",")
@@ -647,30 +563,13 @@
           .split(",")
           .map((s) => s.trim())
           .filter((s) => s !== "");
-        const maxAvailable = Math.min(listNama.length, listHadiah.length);
-        const drawCount = Math.min(safeCount, maxAvailable);
-        const nextPrizes = listHadiah.slice(0, drawCount);
 
         document.getElementById("countNama").innerText = listNama.length;
         document.getElementById("countHadiah").innerText = listHadiah.length;
         document.getElementById("nextPrizeLabel").innerText =
-          nextPrizes.length > 0
-            ? `${drawCount} hadiah berikutnya`
-            : "TIDAK ADA HADIAH";
-        document.getElementById("nextPrizeList").innerHTML = nextPrizes
-          .map(
-            (prize, idx) =>
-              `<span class="badge bg-white border border-warning text-dark fw-semibold" style="font-size: 0.85rem;">${idx + 1}. ${prize}</span>`,
-          )
-          .join("");
-        document.getElementById("spinHelp").innerText =
-          maxAvailable > 0
-            ? `Maksimal ${maxAvailable} hadiah dapat diundi saat ini.`
-            : "Lengkapi data nama dan hadiah terlebih dahulu.";
+          listHadiah[0] || "TIDAK ADA HADIAH";
         document.getElementById("btnSpin").disabled =
-          listNama.length === 0 ||
-          listHadiah.length === 0 ||
-          safeCount > maxAvailable;
+          listNama.length === 0 || listHadiah.length === 0;
       }
 
       function runLuckyDraw() {
@@ -715,34 +614,25 @@
 
       function finalizeWinner() {
         const audioW = document.getElementById("audioWin");
-        const requestedCount =
-          parseInt(document.getElementById("inputCount").value, 10) || 1;
-        const quantity = Math.min(
-          requestedCount,
-          listNama.length,
-          listHadiah.length,
-        );
-        const results = [];
+        const winIdx = Math.floor(Math.random() * listNama.length);
+        const winnerName = listNama[winIdx];
+        const prizeName = listHadiah.shift();
 
-        for (let i = 0; i < quantity; i++) {
-          const winIdx = Math.floor(Math.random() * listNama.length);
-          const winnerName = listNama.splice(winIdx, 1)[0];
-          const prizeName = listHadiah.shift();
-          results.push({ nama: winnerName, hadiah: prizeName });
-          winners.unshift({ nama: winnerName, hadiah: prizeName });
-        }
+        // Hapus pemenang dari daftar agar tidak muncul dua kali
+        listNama.splice(winIdx, 1);
 
         // Sinkronisasi ulang tampilan input agar data terbaru tersimpan
         document.getElementById("inputNama").value = listNama.join(", ");
         document.getElementById("inputHadiah").value = listHadiah.join(", ");
 
         // Simpan ke riwayat pemenang dan LocalStorage agar data aman jika refresh
+        winners.unshift({ nama: winnerName, hadiah: prizeName });
         localStorage.setItem("pjt_winners", JSON.stringify(winners));
 
         // Reset dan mainkan suara kemenangan (Tepuk tangan/Terompet)
         if (audioW) {
-          audioW.pause();
-          audioW.currentTime = 0;
+          audioW.pause(); // Hentikan jika suara sebelumnya masih berputar
+          audioW.currentTime = 0; // Kembalikan ke detik awal
           audioW.play().catch((error) => {
             console.log(
               "Interaksi user diperlukan untuk memutar audio:",
@@ -758,41 +648,22 @@
           origin: { y: 0.6 },
         });
 
-        const resultHtml = results
-          .map(
-            (r, idx) => `
-                <div class="result-card">
-                    <div>
-                        <div class="card-subtitle">Pemenang ${idx + 1}</div>
-                        <div class="card-title">${r.nama}</div>
-                    </div>
-                    <div>
-                        <button class="btn btn-sm btn-warning text-dark w-100 text-start fw-semibold">${r.hadiah}</button>
-                    </div>
-                </div>
-            `,
-          )
-          .join("");
-
+        // Tampilkan pengumuman pemenang dengan SweetAlert2
         Swal.fire({
-          title: `🎉 ${results.length} Pemenang Ditarik! 🎉`,
-          html: `<div class="result-grid">${resultHtml}</div>`,
+          title: "🎉 SELAMAT! 🎉",
+          html: `
+            <h3 class="text-success fw-bold animate__animated animate__tada animate__infinite">${winnerName}</h3>
+            <p class="fs-5">Mendapatkan: <b>${prizeName}</b></p>
+        `,
           icon: "success",
           confirmButtonText: "Alhamdulillah",
           confirmButtonColor: "#15803d",
           backdrop: `rgba(21, 128, 61, 0.4)`,
-          width: "96vw",
-          customClass: {
-            popup: "swal2-popup-large",
-            htmlContainer: "swal2-html-large",
-          },
-          showCloseButton: true,
-          showCancelButton: false,
-          focusConfirm: false,
         });
 
-        document.getElementById("displayNama").innerText = "SIAP?";
-        document.getElementById("spinProgress").style.display = "none";
+        // Update elemen tampilan utama[cite: 1]
+        document.getElementById("displayNama").innerText = winnerName;
+        document.getElementById("spinProgress").style.display = "none"; // Sembunyikan progress bar[cite: 1]
         renderWinnerTable();
         syncData();
       }
